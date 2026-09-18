@@ -25,22 +25,31 @@ function App() {
     }
 
     return (
-        <div style={{padding:'20px', textAlign:'center', fontFamily:'sans-serif'}}>
-            <h1>Магазин {cartCount}</h1>
-            {user ? (<div>
-                <p>Привет {user.name}</p>
-                <span>{user.id}</span>
-            </div>) : (<div>
-                <p>Запущено не в телеграмме</p>
-            </div>)}
-            {products.map((item) => (
-                <div key={item.id}>
-                    <img src={item.imageUrl} alt={item.name}/>
-                    <span>{item.name}</span>
-                    <span>{item.price}</span>
-                    <button onClick={() => handleBuy()}>Добавить в корзину</button>
+        <div className="app">
+            <header className="app__header">
+                <h1 className="app__title">Магазин</h1>
+                <div className="app__cart">🛒 {cartCount}</div>
+            </header>
+            {user ? (
+                <div className="app__user">
+                    <p className="app__user-name">Привет, {user.name}</p>
+                    <span className="app__user-id">{user.id}</span>
                 </div>
-            ))}
+            ) : (
+                <p className="app__guest">Запущено не в Telegram</p>
+            )}
+            <div className="app__list">
+                {products.map((item) => (
+                    <div key={item.id} className="app__card">
+                        <img className="app__image" src={item.imageUrl} alt={item.name}/>
+                        <span className="app__name">{item.name}</span>
+                        <span className="app__price">{item.price} ₽</span>
+                        <button className="app__button" onClick={handleBuy}>
+                            Добавить в корзину
+                        </button>
+                    </div>
+                ))}
+            </div>
         </div>
     )
 }
