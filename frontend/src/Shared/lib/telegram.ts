@@ -3,8 +3,3 @@ declare global {
         Telegram?:any
     }
 }
-export interface TgUser{
-    id:number,
-    name:string,
-    username?:string
-}

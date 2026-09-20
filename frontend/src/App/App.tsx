@@ -1,10 +1,12 @@
 import './App.css'
 import {useEffect, useState} from "react";
-import type {TgUser} from "../Shared/lib/telegram";
 import {products} from "../Entities/Product/model/product";
+import {AuthByTg} from "../Features/auth/authByTg";
+import type {User} from "../Entities/User";
+
 
 function App() {
-    const [user, setUser] = useState<TgUser | undefined>(undefined)
+    const [user, setUser] = useState<User | undefined>(undefined)
     const [cartCount, setCartCount] = useState<number>(0)
 
     useEffect(() => {
@@ -12,8 +14,11 @@ function App() {
         if (tg) {
             tg.ready()
             tg.expand()
-            if (tg.initDataUnsafe?.user) {
-                setUser(tg.initDataUnsafe.user)
+            const initData = tg.initData
+            if (initData) {
+                AuthByTg(initData)
+                    .then(data => setUser(data))
+                    .catch(err => console.error(err))
             }
         }
 
@@ -32,8 +37,8 @@ function App() {
             </header>
             {user ? (
                 <div className="app__user">
-                    <p className="app__user-name">Привет, {user.name}</p>
-                    <span className="app__user-id">{user.id}</span>
+                    <p className="app__user-name">Привет, {user.first_name}</p>
+                    <span className="app__user-id">{user.telegram_id}</span>
                 </div>
             ) : (
                 <p className="app__guest">Запущено не в Telegram</p>

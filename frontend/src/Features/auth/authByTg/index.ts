@@ -1,0 +1,1 @@
+export {AuthByTg} from "./model/authByTg";
