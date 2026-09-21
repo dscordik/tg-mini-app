@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app import models
 from app.database import engine
 from app.authtg import router as authtg_router
+from app.products import router as products_router
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title='tg-mini-app', description='portfolio-project')
@@ -14,6 +15,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(authtg_router)
+app.include_router(products_router)
 
 @app.get("/")
 def root():

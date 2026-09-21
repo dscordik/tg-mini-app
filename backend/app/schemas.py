@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
 
 class UserSchema(BaseModel):
     id:int
@@ -9,3 +10,13 @@ class UserSchema(BaseModel):
 
 class TelegramAuthRequest(BaseModel):
     init_data:str
+
+class ProductSchema(BaseModel):
+    id:int
+    title:str
+    price:int
+    image_url:str
+    category:str
+    description:str
+
+    model_config = ConfigDict(from_attributes=True)
