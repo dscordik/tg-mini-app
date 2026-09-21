@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {type Product, productApi} from "../../../Entities/Product";
 import {Link} from "react-router-dom";
+import './ProductCatalog.css'
 
 export const ProductCatalog:React.FC = () => {
     const [products, setProducts] = useState<Product[]>([])

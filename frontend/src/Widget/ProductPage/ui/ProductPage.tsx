@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import {type Product, productApi} from "../../../Entities/Product";
+import './ProductPage.css'
 
 export const ProductPage:React.FC = () => {
     const {id} = useParams()

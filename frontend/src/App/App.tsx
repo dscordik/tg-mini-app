@@ -34,7 +34,6 @@ function App() {
                 <div className="app__user">
                     <p className="app__user-name">Привет, {user.first_name}</p>
                     <span className="app__user-id">{user.telegram_id}</span>
-                    //тут?
                 </div>
             ) : (
                 <p className="app__guest">Запущено не в Telegram</p>
