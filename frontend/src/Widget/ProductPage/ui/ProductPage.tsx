@@ -3,15 +3,24 @@ import {useNavigate, useParams} from "react-router-dom";
 import {type Product, productApi} from "../../../Entities/Product";
 import './ProductPage.css'
 
-export const ProductPage:React.FC = () => {
+interface ProductPageProps{
+    cartCount:number,
+    handleBuy:()=>void
+}
+
+export const ProductPage:React.FC<ProductPageProps> = ({cartCount, handleBuy}) => {
     const {id} = useParams()
     const [product, setProduct] = useState<Product | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
-    const [cartCount, setCartCount] = useState(0);
     const navigate = useNavigate()
 
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
+        const handleBack = () => navigate(-1)
+        if (tg) {
+            tg.BackButton.show()
+            tg.BackButton.onClick(handleBack)
+        }
         async function getProduct() {
             if (!id) {
                 console.error('ID товара не указан');
@@ -21,8 +30,6 @@ export const ProductPage:React.FC = () => {
             try {
                 const productFromApi = await productApi.getProductById(Number(id))
                 setProduct(productFromApi)
-                tg?.BackButton?.show();
-                tg?.BackButton?.onClick(() => navigate(-1));
             } catch (error) {
                 console.error(error)
             } finally {
@@ -31,15 +38,12 @@ export const ProductPage:React.FC = () => {
         }
         getProduct()
         return () => {
-            window.Telegram?.WebApp?.BackButton?.hide();
-            window.Telegram?.WebApp?.BackButton?.offClick(); // убираем слушатель
+            if (tg) {
+                tg.BackButton.offClick(handleBack)
+                tg.BackButton.hide()
+            }
         }
     }, [id, navigate]);
-
-    function handleBuy() {
-        setCartCount(prev => prev + 1)
-        window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success')
-    }
 
     return (
         <div className="product-page">

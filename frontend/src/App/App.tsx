@@ -9,6 +9,7 @@ import {ProductPage} from "../Widget/ProductPage";
 
 function App() {
     const [user, setUser] = useState<User | undefined>(undefined)
+    const [cartCount, setCartCount] = useState(0);
 
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
@@ -25,6 +26,11 @@ function App() {
 
     }, []);
 
+    function handleBuy() {
+        setCartCount(prev => prev + 1)
+        window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success')
+    }
+
     return (
         <div className="app">
             <header className="app__header">
@@ -39,8 +45,8 @@ function App() {
                 <p className="app__guest">Запущено не в Telegram</p>
             )}
             <Routes>
-                <Route path='/' element={<ProductCatalog/>}></Route>
-                <Route path='/product/:id' element={<ProductPage/>}></Route>
+                <Route path='/' element={<ProductCatalog cartCount={cartCount} handleBuy={() => handleBuy()}/>}></Route>
+                <Route path='/product/:id' element={<ProductPage cartCount={cartCount} handleBuy={() => handleBuy()}/>}></Route>
             </Routes>
         </div>
     )

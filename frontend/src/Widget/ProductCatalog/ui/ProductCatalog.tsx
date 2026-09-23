@@ -3,10 +3,14 @@ import {type Product, productApi} from "../../../Entities/Product";
 import {Link} from "react-router-dom";
 import './ProductCatalog.css'
 
-export const ProductCatalog:React.FC = () => {
+interface ProductCatalogProps {
+    cartCount:number,
+    handleBuy:() => void
+}
+
+export const ProductCatalog:React.FC<ProductCatalogProps> = ({cartCount, handleBuy}) => {
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState<boolean>(true)
-    const [cartCount, setCartCount] = useState<number>(0)
 
     useEffect(() => {
         async function productEffect() {
@@ -21,11 +25,6 @@ export const ProductCatalog:React.FC = () => {
         }
         productEffect()
     }, []);
-
-    function handleBuy() {
-        setCartCount(prev => prev + 1)
-        window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success')
-    }
 
     return (
         <div className="product-catalog">
@@ -43,7 +42,7 @@ export const ProductCatalog:React.FC = () => {
                                     <div key={item.id} className="product-catalog__card">
                                         <Link to={`/product/${item.id}`} className="product-catalog__link"><img src={item.image_url} alt={item.title} className="product-catalog__image"/></Link>
                                         <h3 className="product-catalog__title">{item.title}</h3>
-                                        <p className="product-catalog__price">{item.price.toLocaleString('ru-RU')} ₽</p>
+                                        <p className="product-catalog__price">{item.price.toLocaleString('ru-RU')} p</p>
                                         <button className="product-catalog__button" onClick={handleBuy}>В корзину</button>
                                     </div>
                                 ))}
