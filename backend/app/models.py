@@ -27,7 +27,7 @@ class Order(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    status =  Column(Enum('Оформляем', 'Собираем', 'Доставляем', 'Готов к получению'), default='Оформляем', nullable=False)
+    status =  Column(Enum('Оформляем', 'Собираем', 'Доставляем', 'Готов к получению', name='order_status'), default='Оформляем', nullable=False)
     created_at_order = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     total_price = Column(Integer, nullable=False)
     address = Column(String, nullable=False)
