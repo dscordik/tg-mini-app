@@ -4,6 +4,7 @@ from app import models
 from app.database import engine
 from app.authtg import router as authtg_router
 from app.products import router as products_router
+from app.orders import router as order_router
 
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI(title='tg-mini-app', description='portfolio-project')
@@ -16,6 +17,7 @@ app.add_middleware(
 )
 app.include_router(authtg_router)
 app.include_router(products_router)
+app.include_router(order_router)
 
 @app.get("/")
 def root():

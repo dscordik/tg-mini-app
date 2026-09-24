@@ -2,13 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {type Product, productApi} from "../../../Entities/Product";
 import {Link} from "react-router-dom";
 import './ProductCatalog.css'
+import {useCart} from "../../../Features/cart/model/useCart";
 
-interface ProductCatalogProps {
-    cartCount:number,
-    handleBuy:() => void
-}
-
-export const ProductCatalog:React.FC<ProductCatalogProps> = ({cartCount, handleBuy}) => {
+export const ProductCatalog:React.FC = () => {
+    const {addToCart, totalCount} = useCart()
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState<boolean>(true)
 
@@ -26,6 +23,11 @@ export const ProductCatalog:React.FC<ProductCatalogProps> = ({cartCount, handleB
         productEffect()
     }, []);
 
+    function handleBuy(productId: number) {
+        addToCart(productId);
+        window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success');
+    }
+
     return (
         <div className="product-catalog">
             {loading ? (
@@ -36,14 +38,14 @@ export const ProductCatalog:React.FC<ProductCatalogProps> = ({cartCount, handleB
                         <p className="product-catalog__empty">Товары не добавлены</p>
                     ) : (
                         <div>
-                            <div className="product-catalog__header"> {cartCount}</div>
+                            <div className="product-catalog__header"> {totalCount}</div>
                             <div className="product-catalog__list">
                                 {products.map((item) => (
                                     <div key={item.id} className="product-catalog__card">
                                         <Link to={`/product/${item.id}`} className="product-catalog__link"><img src={item.image_url} alt={item.title} className="product-catalog__image"/></Link>
                                         <h3 className="product-catalog__title">{item.title}</h3>
                                         <p className="product-catalog__price">{item.price.toLocaleString('ru-RU')} p</p>
-                                        <button className="product-catalog__button" onClick={handleBuy}>В корзину</button>
+                                        <button className="product-catalog__button" onClick={() => handleBuy(item.id)}>В корзину</button>
                                     </div>
                                 ))}
                             </div>

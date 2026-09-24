@@ -13,6 +13,31 @@ router = APIRouter(prefix='/api', tags=['auth'])
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/telegram")
 
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+    payload = decode_token(token)
+    if payload is None or payload.get('type') != 'access':
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Неверный токен')
+    telegram_id = payload.get('sub')
+    if telegram_id is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Неверный токен')
+    user = db.query(User).filter(User.telegram_id == int(telegram_id)).first()
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Неверный токен')
+    return user
+
+
+def get_current_user_order(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User | None:
+    try:
+        payload = decode_token(token)
+        if payload is None:
+            return None
+        telegram_id = payload.get('sub')
+        if telegram_id is None:
+            return None
+        return db.query(User).filter(User.telegram_id == int(telegram_id)).first()
+    except Exception:
+        return None
+
 @router.post('/auth/telegram')
 def tg_api(req:TelegramAuthRequest, db:Session = Depends(get_db)):
     is_valid = verify_init_data(req.init_data, bot_token=BOT_TOKEN)
@@ -38,16 +63,10 @@ def tg_api(req:TelegramAuthRequest, db:Session = Depends(get_db)):
     }
 
 @router.get('/me')
-def get_tg_me(token:str = Depends(oauth2_scheme),db:Session = Depends(get_db)):
-    payload=decode_token(token)
-    if payload is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Токен не найден')
-    user = db.query(User).filter(User.telegram_id == int(payload['sub'])).first()
-    if user is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Пользователь не найден')
+def get_tg_me(current_user: User = Depends(get_current_user)):
     return {
-        'id':user.id,
-        'telegram_id':user.telegram_id,
-        'first_name': user.first_name,
-        'username': user.username
+        'id': current_user.id,
+        'telegram_id': current_user.telegram_id,
+        'first_name': current_user.first_name,
+        'username': current_user.username
     }

@@ -2,17 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import {type Product, productApi} from "../../../Entities/Product";
 import './ProductPage.css'
+import {useCart} from "../../../Features/cart/model/useCart";
 
-interface ProductPageProps{
-    cartCount:number,
-    handleBuy:()=>void
-}
-
-export const ProductPage:React.FC<ProductPageProps> = ({cartCount, handleBuy}) => {
+export const ProductPage:React.FC = () => {
     const {id} = useParams()
     const [product, setProduct] = useState<Product | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const navigate = useNavigate()
+    const { addToCart, totalCount } = useCart();
 
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
@@ -45,6 +42,11 @@ export const ProductPage:React.FC<ProductPageProps> = ({cartCount, handleBuy}) =
         }
     }, [id, navigate]);
 
+    function handleBuy(productId: number) {
+        addToCart(productId);
+        window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success');
+    }
+
     return (
         <div className="product-page">
             {loading ? (
@@ -55,13 +57,13 @@ export const ProductPage:React.FC<ProductPageProps> = ({cartCount, handleBuy}) =
                         <p className="product-page__not-found">Товар не найден</p>
                     ) : (
                         <div className="product-page__content">
-                            <div className="product-page__counter">🛒 {cartCount}</div>
+                            <div className="product-page__counter">🛒 {totalCount}</div>
                             <img src={product.image_url} alt={product.title} className="product-page__image"/>
                             <h1 className="product-page__title">{product.title}</h1>
                             <p className="product-page__category">{product.category}</p>
-                            <p className="product-page__price">{product.price.toLocaleString('ru-RU')} ₽</p>
+                            <p className="product-page__price">{product.price.toLocaleString('ru-RU')} P</p>
                             <p className="product-page__description">{product.description}</p>
-                            <button className="product-page__button" onClick={handleBuy}>В корзину</button>
+                            <button className="product-page__button" onClick={() => handleBuy(Number(id))}>В корзину</button>
                         </div>
                     )}
                 </div>
