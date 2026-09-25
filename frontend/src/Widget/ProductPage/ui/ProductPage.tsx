@@ -9,7 +9,7 @@ export const ProductPage:React.FC = () => {
     const [product, setProduct] = useState<Product | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
     const navigate = useNavigate()
-    const { addToCart, totalCount } = useCart();
+    const {addToCart} = useCart();
 
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
@@ -57,7 +57,6 @@ export const ProductPage:React.FC = () => {
                         <p className="product-page__not-found">Товар не найден</p>
                     ) : (
                         <div className="product-page__content">
-                            <div className="product-page__counter">🛒 {totalCount}</div>
                             <img src={product.image_url} alt={product.title} className="product-page__image"/>
                             <h1 className="product-page__title">{product.title}</h1>
                             <p className="product-page__category">{product.category}</p>

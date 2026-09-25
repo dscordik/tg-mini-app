@@ -60,6 +60,9 @@ export const Orders: React.FC = () => {
 
     return (
         <div className="orders">
+            <button className="orders__back-button" onClick={() => navigate(-1)}>
+                ← Назад
+            </button>
             {loading ? (
                 <p className="orders__loading">Загрузка заказов...</p>
             ) : error ? (

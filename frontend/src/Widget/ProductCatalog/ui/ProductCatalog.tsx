@@ -5,7 +5,7 @@ import './ProductCatalog.css'
 import {useCart} from "../../../Features/cart/model/useCart";
 
 export const ProductCatalog:React.FC = () => {
-    const {addToCart, totalCount} = useCart()
+    const {addToCart} = useCart()
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState<boolean>(true)
 
@@ -38,7 +38,6 @@ export const ProductCatalog:React.FC = () => {
                         <p className="product-catalog__empty">Товары не добавлены</p>
                     ) : (
                         <div>
-                            <div className="product-catalog__header"> {totalCount}</div>
                             <div className="product-catalog__list">
                                 {products.map((item) => (
                                     <div key={item.id} className="product-catalog__card">
