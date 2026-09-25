@@ -6,6 +6,11 @@
     margin: 0 auto;
 }
 
+.product-page__button--added {
+    background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%) !important;
+    transform: scale(1.05);
+}
+
 /* Загрузка */
 .product-page__loading {
     text-align: center;

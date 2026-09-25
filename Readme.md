@@ -53,3 +53,44 @@
 ```bash
 git clone https://github.com/yourusername/telegram-mini-app.git
 cd telegram-mini-app
+
+### 2. Backend
+
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate       # Windows
+# source venv/bin/activate  # macOS/Linux
+
+pip install -r requirements.txt
+```
+
+Создайте файл `.env` в папке `backend`:
+
+`SECRET_KEY` можно сгенерировать командой:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+Запуск сервера:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Backend будет доступен на `http://localhost:8000`.
+
+### 3. Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend будет доступен на адресе, который выведет Vite (обычно `http://localhost:5173`).
+
+### 4. Бот
+
+Открыть приложение можно через бота: [@ваш_бот](https://t.me/@myshop_tma_bot)

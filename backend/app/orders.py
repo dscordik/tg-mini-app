@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from starlette import status
 from app.authtg import get_current_user  # строгая версия, не get_current_user_order
+from app.bot import send_telegram_message
 from app.database import get_db
 from app.models import User, Order, OrderItem, Product
 from app.schemas import OrderOut, OrderCreate
@@ -40,6 +41,11 @@ def create_order(order: OrderCreate, db: Session = Depends(get_db), current_user
         ))
     db.commit()
     db.refresh(new_order)
+
+    send_telegram_message(
+        chat_id=current_user.telegram_id,
+        text=f'Ваш заказ №{new_order.id} оформлен на сумму {total_price} ₽. Мы уже начали его собирать!'
+    )
 
     return new_order
 

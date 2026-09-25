@@ -8,7 +8,7 @@ import type { OrderCreate } from '../../../Entities/Order';
 import './Cart.css';
 
 export const Cart: React.FC = () => {
-    const { getOrderItems, clearCart, totalCount } = useCart();
+    const { getOrderItems, addToCart, removeFromCart, clearCart, totalCount } = useCart();
     const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>([]);
     const [address, setAddress] = useState('');
@@ -37,15 +37,12 @@ export const Cart: React.FC = () => {
             setError('Пожалуйста, введите адрес доставки');
             return;
         }
-
         setError(null);
         setIsSubmitting(true);
-
         const orderData: OrderCreate = {
             address: address.trim(),
             items: getOrderItems()
         };
-
         try {
             await orderApi.createOrder(orderData);
             clearCart();
@@ -90,7 +87,11 @@ export const Cart: React.FC = () => {
                                 <li key={item.product_id} className="cart__item">
                                     <div className="cart__item-info">
                                         <span className="cart__item-name">{product.title}</span>
-                                        <span className="cart__item-count">{item.total_count} шт.</span>
+                                        <div className="cart__item-controls">
+                                            <button className="cart__qty-button" onClick={() => removeFromCart(item.product_id)} aria-label="Уменьшить количество">−</button>
+                                            <span className="cart__item-count">{item.total_count}</span>
+                                            <button className="cart__qty-button" onClick={() => addToCart(item.product_id)} aria-label="Увеличить количество">+</button>
+                                        </div>
                                     </div>
                                     <div className="cart__item-price">{(product.price * item.total_count).toLocaleString('ru-RU')} Р</div>
                                 </li>

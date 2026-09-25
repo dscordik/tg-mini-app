@@ -10,6 +10,7 @@ export const ProductPage:React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true)
     const navigate = useNavigate()
     const {addToCart} = useCart();
+    const [justAdded, setJustAdded] = useState<boolean>(false)
 
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
@@ -42,8 +43,15 @@ export const ProductPage:React.FC = () => {
         }
     }, [id, navigate]);
 
+    useEffect(() => {
+        if (!justAdded) return;
+        const timer = setTimeout(() => setJustAdded(false), 600);
+        return () => clearTimeout(timer);
+    }, [justAdded]);
+
     function handleBuy(productId: number) {
         addToCart(productId);
+        setJustAdded(true)
         window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success');
     }
 
@@ -62,7 +70,9 @@ export const ProductPage:React.FC = () => {
                             <p className="product-page__category">{product.category}</p>
                             <p className="product-page__price">{product.price.toLocaleString('ru-RU')} P</p>
                             <p className="product-page__description">{product.description}</p>
-                            <button className="product-page__button" onClick={() => handleBuy(Number(id))}>В корзину</button>
+                            <button className={`product-page__button${justAdded ? ' product-page__button--added' : ''}`} onClick={() => handleBuy(Number(id))}>
+                                {justAdded ? 'Добавлено ✓' : 'В корзину'}
+                            </button>
                         </div>
                     )}
                 </div>

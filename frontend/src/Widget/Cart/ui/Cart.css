@@ -182,3 +182,34 @@
     cursor: not-allowed;
     box-shadow: none;
 }
+
+.cart__item-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.cart__qty-button {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #c0392b;
+    background: #fdecea;
+    border: 1px solid #f0d5d5;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.cart__qty-button:hover {
+    background: #f5e6e6;
+}
+
+.cart__qty-button:active {
+    transform: scale(0.92);
+}

@@ -8,6 +8,7 @@ export const ProductCatalog:React.FC = () => {
     const {addToCart} = useCart()
     const [products, setProducts] = useState<Product[]>([])
     const [loading, setLoading] = useState<boolean>(true)
+    const [justAddedId, setJustAddedId] = useState<number | null>(null)
 
     useEffect(() => {
         async function productEffect() {
@@ -23,8 +24,15 @@ export const ProductCatalog:React.FC = () => {
         productEffect()
     }, []);
 
+    useEffect(() => {
+        if (justAddedId === null) return;
+        const timer = setTimeout(() => setJustAddedId(null), 600);
+        return () => clearTimeout(timer);
+    }, [justAddedId]);
+
     function handleBuy(productId: number) {
         addToCart(productId);
+        setJustAddedId(productId)
         window.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.('success');
     }
 
@@ -44,7 +52,9 @@ export const ProductCatalog:React.FC = () => {
                                         <Link to={`/product/${item.id}`} className="product-catalog__link"><img src={item.image_url} alt={item.title} className="product-catalog__image"/></Link>
                                         <h3 className="product-catalog__title">{item.title}</h3>
                                         <p className="product-catalog__price">{item.price.toLocaleString('ru-RU')} p</p>
-                                        <button className="product-catalog__button" onClick={() => handleBuy(item.id)}>В корзину</button>
+                                        <button className={`product-catalog__button${justAddedId === item.id ? ' product-catalog__button--added' : ''}`} onClick={() => handleBuy(item.id)}>
+                                            {justAddedId === item.id ? 'Добавлено ✓' : 'В корзину'}
+                                        </button>
                                     </div>
                                 ))}
                             </div>
