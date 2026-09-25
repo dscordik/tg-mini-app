@@ -64,6 +64,9 @@ export const Cart: React.FC = () => {
 
     return (
         <div className="cart">
+            <button className="orders__back-button" onClick={() => navigate(-1)}>
+                ← Назад
+            </button>
             {success ? (
                 <div className="cart__success">
                     <h2 className="cart__title">Заказ успешно оформлен! 🎉</h2>
